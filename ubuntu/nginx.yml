@@ -1,0 +1,83 @@
+---
+- hosts: master
+  tasks:
+    - name: Install Nginx Webserver
+      become_user: "{{ ansible_user }}"
+      shell: |
+        cat <<EOF | tee .kube/nginx-deploy.yml
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: nginx-deployment
+        spec:
+          selector:
+            matchLabels:
+              app: nginx
+          replicas: 2 # tells deployment to run 2 pods matching the template
+          template:
+            metadata:
+              labels:
+                app: nginx
+            spec:
+              containers:
+              - name: nginx
+                image: nginx:1.14.2
+                ports:
+                - containerPort: 80
+        EOF
+
+        kubectl apply -f .kube/nginx-deploy.yml
+
+    - name: Install Loadbalancer
+      become_user: "{{ ansible_user }}"
+      shell: |
+        cat <<EOF | tee .kube/nginx-lb.yml
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: nginx-service
+        spec:
+          selector:
+            app: nginx
+          ports:
+            - protocol: TCP
+              port: 80
+              targetPort: 80
+          type: LoadBalancer
+        ---
+        apiVersion: networking.istio.io/v1alpha3
+        kind: Gateway
+        metadata:
+          name: nginx-gateway
+        spec:
+          selector:
+            istio: ingressgateway
+          servers:
+            - port:
+                number: 80
+                name: http
+                protocol: HTTP
+              hosts:
+              - "*"
+        ---
+        apiVersion: networking.istio.io/v1alpha3
+        kind: VirtualService
+        metadata:
+          name: nginx
+        spec:
+          hosts:
+          - "*"
+          gateways:
+          - nginx-gateway
+          http:
+          - match:
+            - uri:
+                prefix: /
+            route:
+            - destination:
+                port:
+                  number: 80
+                host: nginx-service
+        EOF
+
+        kubectl apply -f .kube/nginx-lb.yml

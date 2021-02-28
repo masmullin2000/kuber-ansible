@@ -1,0 +1,21 @@
+---
+- hosts: all
+  tasks:
+    - name: Copy Modules to Clients
+      become_user: root
+      copy:
+        src: /home/mm/kernel/linux/kernel.tar.gz
+        dest: /lib/modules/
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Install Modules
+      become_user: root
+      shell: |
+        mkdir store
+        tar xf kernel.tar.gz -C store
+        mv store/lib/modules/`uname -r` .
+        rm -rf store
+      args:
+        chdir: /lib/modules/

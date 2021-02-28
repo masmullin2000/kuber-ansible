@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become_user: root
+  tasks:
+    - name: Update Apt
+      apt: upgrade=dist force_apt_get=yes update_cache=true
+
+    - name: Update snap
+      shell: snap refresh

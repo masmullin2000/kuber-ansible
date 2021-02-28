@@ -1,0 +1,12 @@
+---
+- hosts: master
+  tasks:
+    - name: Install Istio
+      become_user: "{{ ansible_user }}"
+      shell: |
+        curl -L https://istio.io/downloadIstio | sh -
+        mv istio-* istio
+        export PATH=$PWD/istio/bin:$PATH
+        echo -n "PATH=$PWD/istio/bin:$PATH" >> ~/.bashrc
+        istioctl install --set profile=default -y
+        kubectl label namespace default istio-injection=enabled

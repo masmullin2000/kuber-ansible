@@ -1,0 +1,7 @@
+---
+#- import_playbook: update.yml
+- import_playbook: install-modules.yml
+- import_playbook: install-kub.yml
+- import_playbook: install-istio.yml
+- import_playbook: install-metal.yml
+- import_playbook: nginx.yml
