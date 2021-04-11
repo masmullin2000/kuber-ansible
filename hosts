@@ -1,13 +1,16 @@
 [master]
-192.168.0.20
+192.168.0.14
 
 [nodes]
-192.168.0.21
-192.168.0.22
+192.168.0.15
+192.168.0.16
+192.168.0.17
+
 
 [all:vars]
 ansible_connection=ssh
-ansible_user=mm
+ansible_user=user
 ansible_become_method=sudo
 ansible_become=yes
+kernel_pkg=/home/mm/code/linux/kernel.tar.gz
 #ansible_ssh_private_key_file=./ansikube.pem

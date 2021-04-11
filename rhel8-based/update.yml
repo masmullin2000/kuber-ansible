@@ -1,0 +1,17 @@
+---
+- hosts: all
+  tasks:
+    - name: Update
+      dnf:
+        name: "*"
+        state: latest
+
+    - name: Install Tar
+      dnf:
+        name: "tar"
+        state: latest
+
+    - name: Install Wget
+      dnf:
+        name: "wget"
+        state: latest

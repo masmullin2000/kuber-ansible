@@ -1,0 +1,22 @@
+---
+- hosts: all
+  tasks:
+    - name: Install Kubelet Kubeadm and Kubectl
+      become_user: root
+      shell: |
+        apt install -y apt-transport-https curl
+        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+        
+        cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+        deb https://apt.kubernetes.io/ kubernetes-xenial main
+        EOF
+        
+        apt update
+        apt install kubelet kubeadm kubectl -y
+      #  apt-mark hold kubelet kubeadm kubectl
+    
+    - name: Get containerd
+      become_user: root
+      apt: 
+        name: containerd
+        update_cache: yes

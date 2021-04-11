@@ -1,0 +1,38 @@
+---
+- hosts: master
+  tasks:
+    - name: Generate Token Info
+      become_user: "{{ansible_user}}"
+      shell: |
+        kubeadm token create --print-join-command | tr -d '\n' > /home/{{ ansible_user }}/.kube/join
+      #echo " --ignore-preflight-errors=SystemVerification" >> .kube/join
+
+    - name: Copy the join command to /tmp/join
+      fetch:
+        dest: /tmp/join
+        src: /home/{{ ansible_user }}/.kube/join
+        flat: yes
+
+- hosts: nodes
+  tasks:
+    - name: Change Node Hostnames
+      become_user: root
+      hostname:
+        name: "node{{ play_hosts.index(inventory_hostname)|int+1 }}"
+    - debug: msg="{{ play_hosts.index(inventory_hostname) }}"
+    - debug: msg="{{ inventory_hostname }}"
+
+    - name: Copy the join command to the nodes
+      become_user: root
+      copy:
+        src: /tmp/join
+        dest: /tmp/join
+        mode: 0755
+
+    - name: Join the nodes to master: THIS WILL BE SLOW
+      become_user: root
+      shell: |
+        kubeadm reset -f
+        sh /tmp/join
+        echo "cgroupDriver: systemd" >> /var/lib/kubelet/config.yaml
+        systemctl restart kubelet

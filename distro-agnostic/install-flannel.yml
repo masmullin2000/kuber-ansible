@@ -1,0 +1,20 @@
+---
+- hosts: master
+  tasks:
+    - name: Enable Flannel
+      become_user: root
+      shell: |
+        mkdir -p /run/flannel
+        cat << EOF | tee /run/flannel/subnet.env
+        FLANNEL_NETWORK=10.244.0.0/16
+        FLANNEL_SUBNET=10.244.0.1/24
+        FLANNEL_MTU=1450
+        FLANNEL_IPMASQ=true
+        EOF
+        chmod 777 -R /run/flannel
+
+    - name: Install Networking
+      become_user: "{{ ansible_user }}"
+      shell: |
+        wget https://raw.githubusercontent.com/coreos/flannel/v0.13.0/Documentation/kube-flannel.yml -O .kube/kube-flannel.yml
+        kubectl apply -f .kube/kube-flannel.yml

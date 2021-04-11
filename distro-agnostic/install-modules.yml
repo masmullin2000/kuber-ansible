@@ -4,7 +4,7 @@
     - name: Copy Modules to Clients
       become_user: root
       copy:
-        src: /home/mm/kernel/linux/kernel.tar.gz
+        src: "{{ kernel_pkg }}"
         dest: /lib/modules/
         owner: root
         group: root
