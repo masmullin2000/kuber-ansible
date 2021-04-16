@@ -1,0 +1,8 @@
+---
+- hosts: master
+  tasks:
+    - name: Install Cilium
+      become_user: "{{ ansible_user }}"
+      shell: |
+        wget https://raw.githubusercontent.com/cilium/cilium/1.9.5/install/kubernetes/quick-install.yaml -O .kube/kube-cilium.yml
+        kubectl create -f .kube/kube-cilium.yml

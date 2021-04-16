@@ -6,12 +6,12 @@
         name: "*"
         state: latest
 
-    - name: Install Tar
+    - name: Install Needed Tools
       dnf:
-        name: "tar"
+        name: "tar,wget"
         state: latest
 
-    - name: Install Wget
+    - name: Install Nice to haves
       dnf:
-        name: "wget"
+        name: "htop"
         state: latest

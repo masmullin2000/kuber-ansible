@@ -3,7 +3,8 @@
 - import_playbook: ../distro-agnostic/install-modules.yml
 - import_playbook: install-k8s.yml
 - import_playbook: ../distro-agnostic/install-kub.yml
-- import_playbook: ../distro-agnostic/install-flannel.yml
+- import_playbook: ../distro-agnostic/install-cilium.yml
+#- import_playbook: ../distro-agnostic/install-flannel.yml
 - import_playbook: ../distro-agnostic/join-nodes.yml
 - import_playbook: ../distro-agnostic/install-istio.yml
 - import_playbook: ../distro-agnostic/install-metal.yml

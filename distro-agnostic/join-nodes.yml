@@ -29,7 +29,7 @@
         dest: /tmp/join
         mode: 0755
 
-    - name: Join the nodes to master: THIS WILL BE SLOW
+    - name: Join the nodes to master(THIS WILL BE SLOW)
       become_user: root
       shell: |
         kubeadm reset -f

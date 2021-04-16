@@ -37,3 +37,8 @@
         containerd config default > /etc/containerd/config.toml
         systemctl restart containerd
         systemctl enable containerd
+
+    - name: Fix up /run/systemd/resolve
+      become_user: root
+      shell: |
+        ln -sf /run/NetworkManager /run/systemd/resolve

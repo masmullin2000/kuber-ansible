@@ -51,7 +51,7 @@
       hostname:
         name: "master-{{ play_hosts.index(inventory_hostname)|int+1 }}"
     
-    - name: Initialize Cluster
+    - name: Initialize Cluster (WILL BE SLOW)
       become_user: root
       shell: |
         kubeadm reset -f
