@@ -23,7 +23,7 @@
             - name: default
               protocol: layer2
               addresses:
-              - 192.168.0.240-192.168.0.241
+              - 192.168.1.240-192.168.1.241
         EOF
 
         kubectl apply -f .kube/metalconfig.yml

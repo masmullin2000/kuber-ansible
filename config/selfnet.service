@@ -1,0 +1,11 @@
+[Unit]
+Description=Self Network Service
+
+[Service]
+Type=simple
+Restart=no
+User=root
+ExecStart=/root/vm-self-net.sh
+
+[Install]
+WantedBy=multi-user.target
