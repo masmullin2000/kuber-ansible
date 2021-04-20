@@ -1,0 +1,12 @@
+---
+- hosts: registry
+  name: Gather info about registry
+  tasks: [ ]
+
+- hosts: master
+  tasks:
+    - name: test
+      become_user: root
+      shell: |
+        REG_IP={{ hostvars[groups['registry'][0]]['ansible_eth0']['ipv4']['address'] }}
+        echo $REG_IP > test.txt

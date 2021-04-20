@@ -1,5 +1,9 @@
 ---
-- hosts: all
+- hosts: registry
+  name: Gather info about registry
+  tasks: [ ]
+
+- hosts: master nodes
   tasks:
     - name: Configure Kubernetes
       become_user: root
@@ -35,14 +39,13 @@
         owner: root
         group: root
         mode: '0644'
-      # shell: |
-      #   containerd config default | tee /etc/containerd/config.toml
 
-    # - name: Enable Network Forwarding
-    #   become_user: root
-    #   shell: |
-    #     echo "net.bridge.bridge-nf-call-iptables=1" | tee -a /etc/sysctl.conf
-    #     sysctl -p
+    - name: Edit containerd configuration
+      become_user: root
+      shell: |
+        REG_IP={{ hostvars[groups['registry'][0]]['ansible_eth0']['ipv4']['address'] }}
+        sed -i "s/__LOCAL_REGISTRY__/$REG_IP:5000/g" /etc/containerd/config.toml
+        systemctl restart containerd
 
 - hosts: master
   tasks:

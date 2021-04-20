@@ -1,6 +1,8 @@
 ---
 - import_playbook: update.yml
 - import_playbook: ../distro-agnostic/install-modules.yml
+- import_playbook: install-registry.yml
+- import_playbook: ../docker-reg/run-registry.yml
 - import_playbook: install-k8s.yml
 - import_playbook: ../distro-agnostic/install-kub.yml
 #- import_playbook: ../distro-agnostic/install-flannel.yml

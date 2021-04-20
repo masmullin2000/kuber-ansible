@@ -1,13 +1,13 @@
 [master]
-192.168.1.54
+192.168.0.50
+
+[registry]
+192.168.0.51
 
 [nodes]
-192.168.1.55
-192.168.1.56
-192.168.1.57
-192.168.1.58
-192.168.1.59
-192.168.1.60
+192.168.0.52
+192.168.0.53
+192.168.0.54
 
 [all:vars]
 ansible_connection=ssh
@@ -15,4 +15,5 @@ ansible_user=user
 ansible_become_method=sudo
 ansible_become=yes
 kernel_pkg=/home/mm/code/linux/kernel.tar.gz
+metal_net_pre=192.168.0
 #ansible_ssh_private_key_file=./ansikube.pem

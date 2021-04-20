@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: master nodes
   tasks:
     - name: Install Kubelet Kubeadm and Kubectl
       become_user: root
@@ -15,8 +15,23 @@
         apt install kubelet kubeadm kubectl -y
       #  apt-mark hold kubelet kubeadm kubectl
     
-    - name: Get containerd
+    # - name: Get containerd
+    #   become_user: root
+    #   apt: 
+    #     name: containerd
+    #     update_cache: yes
+
+    - name: Get ContainerD
       become_user: root
-      apt: 
-        name: containerd
-        update_cache: yes
+      shell: |
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+          gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+        echo \
+          "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+          $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+        apt update
+        apt install containerd.io -y
+
+
