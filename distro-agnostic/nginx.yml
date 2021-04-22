@@ -9,7 +9,8 @@
       become_user: "{{ ansible_user }}"
       shell: |
         REG_IP={{ hostvars[groups['registry'][0]]['ansible_eth0']['ipv4']['address'] }}
-        cat <<EOF | tee .kube/nginx-deploy.yml
+
+        cat <<EOF | tee .kube/nginx.yml
         apiVersion: apps/v1
         kind: Deployment
         metadata:
@@ -26,17 +27,10 @@
             spec:
               containers:
               - name: nginx
-                image: $REG_IP:5000/my-nginx:latest
+                image: registry:5000/my-nginx:latest
                 ports:
                 - containerPort: 80
-        EOF
-
-        kubectl apply -f .kube/nginx-deploy.yml
-
-    - name: Install Loadbalancer
-      become_user: "{{ ansible_user }}"
-      shell: |
-        cat <<EOF | tee .kube/nginx-lb.yml
+        ---
         apiVersion: v1
         kind: Service
         metadata:
@@ -85,4 +79,4 @@
                 host: nginx-service
         EOF
 
-        kubectl apply -f .kube/nginx-lb.yml
+        kubectl apply -f .kube/nginx.yml

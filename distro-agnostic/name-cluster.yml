@@ -1,0 +1,31 @@
+---
+- hosts: master
+  tasks:
+  - name: Change Master Hostname
+    become_user: root
+    hostname:
+      name: "master-{{ play_hosts.index(inventory_hostname)|int+1 }}"
+
+- hosts: registry
+  tasks:
+  - name: Change Registry Hostname
+    become_user: root
+    hostname:
+      name: "registry"
+
+- hosts: nodes
+  tasks:
+  - name: Change Node Hostnames
+    become_user: root
+    hostname:
+      name: "node{{ play_hosts.index(inventory_hostname)|int+1 }}"
+  - debug: msg="{{ play_hosts.index(inventory_hostname) }}"
+  - debug: msg="{{ inventory_hostname }}"
+
+- hosts: all
+  tasks:
+  - name: Put registry in All machine's /etc/hosts file
+    become_user: root
+    shell: |
+      REG_IP={{ hostvars[groups['registry'][0]]['ansible_eth0']['ipv4']['address'] }}
+      echo "$REG_IP registry" >> /etc/hosts

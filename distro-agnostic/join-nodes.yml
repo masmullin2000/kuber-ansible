@@ -15,13 +15,6 @@
 
 - hosts: nodes
   tasks:
-    - name: Change Node Hostnames
-      become_user: root
-      hostname:
-        name: "node{{ play_hosts.index(inventory_hostname)|int+1 }}"
-    - debug: msg="{{ play_hosts.index(inventory_hostname) }}"
-    - debug: msg="{{ inventory_hostname }}"
-
     - name: Copy the join command to the nodes
       become_user: root
       copy:

@@ -1,8 +1,4 @@
 ---
-- hosts: registry
-  name: Gather info about registry
-  tasks: [ ]
-
 - hosts: master nodes
   tasks:
     - name: Configure Kubernetes
@@ -40,25 +36,24 @@
         group: root
         mode: '0644'
 
-    - name: Edit containerd configuration
+    # - name: Edit containerd configuration
+    #   become_user: root
+    #   shell: |
+    #     REG_IP={{ hostvars[groups['registry'][0]]['ansible_eth0']['ipv4']['address'] }}
+    #     sed -i "s/__LOCAL_REGISTRY__/$REG_IP:5000/g" /etc/containerd/config.toml
+    #     systemctl restart containerd
+    - name: Restart Containerd to pick up edited config
       become_user: root
       shell: |
-        REG_IP={{ hostvars[groups['registry'][0]]['ansible_eth0']['ipv4']['address'] }}
-        sed -i "s/__LOCAL_REGISTRY__/$REG_IP:5000/g" /etc/containerd/config.toml
         systemctl restart containerd
 
 - hosts: master
-  tasks:
-    - name: Change Master Hostname
-      become_user: root
-      hostname:
-        name: "master-{{ play_hosts.index(inventory_hostname)|int+1 }}"
-    
+  tasks: 
     - name: Initialize Cluster (WILL BE SLOW)
       become_user: root
       shell: |
         kubeadm reset -f
-        kubeadm init --pod-network-cidr=10.244.0.0/16
+        kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=NumCPU
         echo "cgroupDriver: systemd" >> /var/lib/kubelet/config.yaml
         echo "resolvConf: /run/systemd/resolve/resolv.conf" >> /var/lib/kubelet/config.yaml
         systemctl restart kubelet

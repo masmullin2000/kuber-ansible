@@ -23,7 +23,7 @@
             - name: default
               protocol: layer2
               addresses:
-              - {{ metal_net_pre }}.240-{{ metal_net_pre }}.241
+              - {{ metal_net_pre }}.240-{{ metal_net_pre }}.245
         EOF
 
         kubectl apply -f .kube/metalconfig.yml
